@@ -2,11 +2,13 @@
   "name": "react-dashboard",
   "version": "0.1.0",
   "private": true,
+  "author": "Cleber Henrique",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.2.0",
@@ -20,11 +22,21 @@
     "react-icons": "^5.2.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/cz-commitlint": "^19.2.0",
+    "@commitlint/prompt-cli": "^19.3.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
-    "typescript": "^5"
+    "husky": "^9.0.11",
+    "typescript": "^5.4.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
   }
 }

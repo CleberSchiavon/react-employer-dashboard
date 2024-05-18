@@ -10,16 +10,8 @@ import {
   Text,
   useDisclosure,
   BoxProps,
-  FlexProps,
 } from "@chakra-ui/react";
-import {
-  FiHome,
-  FiTrendingUp,
-  FiCompass,
-  FiStar,
-  FiSettings,
-  FiMenu,
-} from "react-icons/fi";
+import { FiHome } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { NavItem } from "../NavItem";
 import { MobileNav } from "./MobileNav";
@@ -28,6 +20,11 @@ interface LinkItemProps {
   name: string;
   icon: IconType;
 }
+interface SidebarProps extends BoxProps {
+  onClose: () => void;
+  navbarText: string;
+}
+
 const LinkItems: Array<LinkItemProps> = [{ name: "Home", icon: FiHome }];
 
 export default function AppSidebar({
@@ -59,17 +56,16 @@ export default function AppSidebar({
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+      <MobileNav
+        navbarText={navbarText}
+        display={{ base: "flex", md: "none" }}
+        onOpen={onOpen}
+      />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
       </Box>
     </Box>
   );
-}
-
-interface SidebarProps extends BoxProps {
-  onClose: () => void;
-  navbarText: string;
 }
 
 const SidebarContent = ({ onClose, navbarText, ...rest }: SidebarProps) => {
@@ -84,7 +80,7 @@ const SidebarContent = ({ onClose, navbarText, ...rest }: SidebarProps) => {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+        <Text fontSize="xl" fontFamily="monospace">
           {navbarText}
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />

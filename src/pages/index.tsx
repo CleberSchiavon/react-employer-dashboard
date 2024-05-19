@@ -18,6 +18,7 @@ import {
 import { Employer } from "@/types/Employer";
 import { ModalTypes } from "@/types/Modals";
 import { getDashboardModal } from "@/components/Modals";
+import { defineHomeGreeting } from "@/lib/dateUtils";
 
 interface IDashboardModal {
   isOpen: boolean;
@@ -74,7 +75,7 @@ export default function Home() {
         >
           <Stack spacing={5}>
             <Heading as="h2" size="lg">
-              Boa noite! 👋🏼
+              {defineHomeGreeting()} 👋🏼
             </Heading>
             <EmployerTable />
           </Stack>

@@ -1,13 +1,33 @@
-import { HomeContext } from "@/pages";
+import { HomeContext, defaultHomeModalState } from "@/pages";
+import { Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
 
 export const DeleteEmployerModal = () => {
-  const { dashboardModal } = useContext(HomeContext);
+  const { setDashboardModal, currentEditingEmployer } = useContext(HomeContext);
+  const handleSubmit = async () => {
+    await console.log(currentEditingEmployer?.id);
+    setDashboardModal(defaultHomeModalState);
+  };
   return (
-    <div>
-      <p>Delete Employer</p>
-      <p>{dashboardModal.employee?.name}</p>
-      <p>{dashboardModal.employee?.id}</p>
-    </div>
+    <Box>
+      <Stack spacing={4}>
+        <Text fontSize="lg" fontWeight="bold">
+          Deletar Funcionário
+        </Text>
+        <Text fontSize="md">
+          Você tem certeza que deseja deletar o funcionário{" "}
+          {currentEditingEmployer?.name}? Essa ação não pode ser desfeita
+        </Text>
+      </Stack>
+
+      <Flex flexDirection="row" justifyContent="flex-end">
+        <Button onClick={() => setDashboardModal(defaultHomeModalState)}>
+          Cancelar
+        </Button>
+        <Button colorScheme="red" onClick={() => handleSubmit()} ml={3}>
+          Deletar
+        </Button>
+      </Flex>
+    </Box>
   );
 };

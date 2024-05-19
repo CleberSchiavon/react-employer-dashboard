@@ -27,24 +27,35 @@ const nodes = [
     id: 0,
     name: "Teste 1",
     position: "Position 1",
-    departament: "Departament 1",
+    departament: "RH",
   },
   {
     id: 1,
     name: "Teste 2",
     position: "Position 2",
-    departament: "Departament 2",
+    departament: "Tecnologia",
   },
   {
     id: 2,
     name: "Teste 3",
     position: "Position 3",
-    departament: "Departament 3",
+    departament: "Diretoria",
   },
 ];
 
 export function EmployerTable() {
-  const { setDashboardModal } = useContext(HomeContext);
+  const { setCurrentEditingEmployer, setDashboardModal } =
+    useContext(HomeContext);
+
+  const handleEditEmployee = (employee: Employer) => {
+    setDashboardModal({
+      employee: employee,
+      modalType: ModalTypes.EDIT_EMPLOYER,
+      isOpen: true,
+    });
+    setCurrentEditingEmployer(employee);
+  };
+
   const TableColumns = [
     {
       label: "Nome",
@@ -67,13 +78,7 @@ export function EmployerTable() {
         <Flex gap="5">
           <ButtonGroup size="sm">
             <Button
-              onClick={() =>
-                setDashboardModal({
-                  employee: item,
-                  modalType: ModalTypes.EDIT_EMPLOYER,
-                  isOpen: true,
-                })
-              }
+              onClick={() => handleEditEmployee(item)}
               leftIcon={<FaEdit />}
             >
               Editar Funcionário

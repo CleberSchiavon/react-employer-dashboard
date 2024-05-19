@@ -26,24 +26,34 @@ interface IDashboardModal {
 }
 interface IHomeContext {
   dashboardModal: IDashboardModal;
+  setCurrentEditingEmployer: Dispatch<
+    SetStateAction<Partial<Employer> | undefined>
+  >;
   setDashboardModal: Dispatch<SetStateAction<IDashboardModal>>;
+  currentEditingEmployer: Partial<Employer> | undefined;
 }
 
-const defaultModalState = {
+export const defaultHomeModalState = {
   isOpen: false,
   modalType: ModalTypes.ADD_EMPLOYER,
   employee: undefined,
 };
 
 export const HomeContext = createContext<IHomeContext>({
-  dashboardModal: defaultModalState,
+  dashboardModal: defaultHomeModalState,
   setDashboardModal: () => {},
+  setCurrentEditingEmployer: () => {},
+  currentEditingEmployer: undefined,
 });
 
 export const HomeModals = {};
 export default function Home() {
-  const [dashboardModal, setDashboardModal] =
-    useState<IDashboardModal>(defaultModalState);
+  const [currentEditingEmployer, setCurrentEditingEmployer] = useState<
+    Partial<Employer> | undefined
+  >(undefined);
+  const [dashboardModal, setDashboardModal] = useState<IDashboardModal>(
+    defaultHomeModalState
+  );
   const finalRef = useRef(null);
   return (
     <>
@@ -58,6 +68,8 @@ export default function Home() {
           value={{
             dashboardModal: dashboardModal,
             setDashboardModal: setDashboardModal,
+            currentEditingEmployer: currentEditingEmployer,
+            setCurrentEditingEmployer: setCurrentEditingEmployer,
           }}
         >
           <Stack spacing={5}>
@@ -69,10 +81,12 @@ export default function Home() {
           <Modal
             finalFocusRef={finalRef}
             isOpen={dashboardModal.isOpen}
-            onClose={() => setDashboardModal(defaultModalState)}
+            onClose={() => setDashboardModal(defaultHomeModalState)}
+            size="xl"
+            isCentered
           >
-            <ModalOverlay />
-            <ModalContent>
+            <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
+            <ModalContent padding="1rem">
               {getDashboardModal(dashboardModal.modalType)}
             </ModalContent>
           </Modal>

@@ -12,6 +12,7 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -19,6 +20,8 @@ import { Employer } from "@/types/Employer";
 import { ModalTypes } from "@/types/Modals";
 import { getDashboardModal } from "@/components/Modals";
 import { defineHomeGreeting } from "@/lib/dateUtils";
+import { APIClient } from "@/lib/axios";
+import TableSkeletonComponent from "@/components/TableSkeletonComponent";
 
 interface IDashboardModal {
   isOpen: boolean;
@@ -30,7 +33,9 @@ interface IHomeContext {
   setCurrentEditingEmployer: Dispatch<
     SetStateAction<Partial<Employer> | undefined>
   >;
+  setEmployers: Dispatch<SetStateAction<Employer[]>>;
   setDashboardModal: Dispatch<SetStateAction<IDashboardModal>>;
+  employers: Employer[];
   currentEditingEmployer: Partial<Employer> | undefined;
 }
 
@@ -41,6 +46,8 @@ export const defaultHomeModalState = {
 };
 
 export const HomeContext = createContext<IHomeContext>({
+  employers: [],
+  setEmployers: () => {},
   dashboardModal: defaultHomeModalState,
   setDashboardModal: () => {},
   setCurrentEditingEmployer: () => {},
@@ -49,12 +56,25 @@ export const HomeContext = createContext<IHomeContext>({
 
 export const HomeModals = {};
 export default function Home() {
+  const [loadingData, setLoadingData] = useState<boolean>(false);
+  const [employers, setEmployers] = useState<Employer[]>([]);
   const [currentEditingEmployer, setCurrentEditingEmployer] = useState<
     Partial<Employer> | undefined
   >(undefined);
   const [dashboardModal, setDashboardModal] = useState<IDashboardModal>(
     defaultHomeModalState
   );
+
+  useEffect(() => {
+    setLoadingData(true);
+    APIClient.get(`/employer`)
+      .then((res) => {
+        setEmployers(res.data);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setLoadingData(false));
+  }, []);
+
   const finalRef = useRef(null);
   return (
     <>
@@ -67,6 +87,8 @@ export default function Home() {
       <RootLayout navbarText="Dashboard App">
         <HomeContext.Provider
           value={{
+            employers: employers,
+            setEmployers: setEmployers,
             dashboardModal: dashboardModal,
             setDashboardModal: setDashboardModal,
             currentEditingEmployer: currentEditingEmployer,
@@ -77,7 +99,7 @@ export default function Home() {
             <Text as="h2" fontSize="lg" fontWeight="500" textAlign="center">
               {defineHomeGreeting()} 👋🏼
             </Text>
-            <EmployerTable />
+            {loadingData ? <TableSkeletonComponent /> : <EmployerTable />}
           </Stack>
           <Modal
             finalFocusRef={finalRef}

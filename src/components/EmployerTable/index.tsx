@@ -23,29 +23,8 @@ import {
 import { HomeContext } from "@/pages";
 import { ModalTypes } from "@/types/Modals";
 
-export const nodes = [
-  {
-    id: 0,
-    name: "Teste 1",
-    position: "Position 1",
-    departament: "RH",
-  },
-  {
-    id: 1,
-    name: "Teste 2",
-    position: "Position 2",
-    departament: "Tecnologia",
-  },
-  {
-    id: 2,
-    name: "Teste 3",
-    position: "Position 3",
-    departament: "Diretoria",
-  },
-];
-
 export function EmployerTable() {
-  const { setCurrentEditingEmployer, setDashboardModal } =
+  const { setCurrentEditingEmployer, setDashboardModal, employers } =
     useContext(HomeContext);
 
   const handleEditEmployee = (employee: Employer) => {
@@ -77,7 +56,7 @@ export function EmployerTable() {
       resize: true,
     },
     {
-      label: "Action",
+      label: "Ações",
       renderCell: (item: Employer) => (
         <Flex gap="5">
           <ButtonGroup size="sm">
@@ -114,11 +93,11 @@ export function EmployerTable() {
     chakraTheme,
     {
       Table: `
-      --data-table-library_grid-template-columns: 10rem 10rem 10rem auto;
+      --data-table-library_grid-template-columns: 10rem 10rem 15rem auto;
       `,
     },
   ]);
-  let data = { nodes };
+  let data = { nodes: employers };
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };

@@ -80,7 +80,7 @@ const SidebarContent = ({ onClose, navbarText, ...rest }: SidebarProps) => {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="xl" fontFamily="monospace">
+        <Text fontSize="md" fontFamily="monospace">
           {navbarText}
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />

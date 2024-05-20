@@ -15,9 +15,3 @@ export const getDashboardModal = (modalType: ModalTypes) => {
       return undefined;
   }
 };
-
-export default {
-  AddEmployerModal,
-  EditEmployerModal,
-  DeleteEmployerModal,
-};

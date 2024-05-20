@@ -2,6 +2,7 @@ import Head from "next/head";
 import { RootLayout } from "../components/Layout";
 import { EmployerTable } from "@/components/EmployerTable";
 import {
+  Flex,
   Modal,
   ModalContent,
   ModalOverlay,
@@ -16,12 +17,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { Employer } from "@/types/Employer";
+import { EditEmployer, Employer } from "@/types/Employer";
 import { ModalTypes } from "@/types/Modals";
 import { getDashboardModal } from "@/components/Modals";
 import { defineHomeGreeting } from "@/lib/dateUtils";
 import { APIClient } from "@/lib/axios";
 import TableSkeletonComponent from "@/components/TableSkeletonComponent";
+import { FormErrorMessage } from "@/components/Typography/FormErrorMessage";
 
 interface IDashboardModal {
   isOpen: boolean;
@@ -30,13 +32,16 @@ interface IDashboardModal {
 }
 interface IHomeContext {
   dashboardModal: IDashboardModal;
+  employers: Employer[];
+  modalError: string | undefined;
+  currentEditingEmployer: Partial<Employer> | undefined;
+  fetchEmployers: () => void;
   setCurrentEditingEmployer: Dispatch<
     SetStateAction<Partial<Employer> | undefined>
   >;
   setEmployers: Dispatch<SetStateAction<Employer[]>>;
   setDashboardModal: Dispatch<SetStateAction<IDashboardModal>>;
-  employers: Employer[];
-  currentEditingEmployer: Partial<Employer> | undefined;
+  setModalError: Dispatch<SetStateAction<string | undefined>>;
 }
 
 export const defaultHomeModalState = {
@@ -47,15 +52,19 @@ export const defaultHomeModalState = {
 
 export const HomeContext = createContext<IHomeContext>({
   employers: [],
-  setEmployers: () => {},
   dashboardModal: defaultHomeModalState,
+  currentEditingEmployer: undefined,
+  modalError: undefined,
+  fetchEmployers: () => {},
+  setEmployers: () => {},
   setDashboardModal: () => {},
   setCurrentEditingEmployer: () => {},
-  currentEditingEmployer: undefined,
+  setModalError: () => {},
 });
 
 export const HomeModals = {};
 export default function Home() {
+  const [modalError, setModalError] = useState<string | undefined>();
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [employers, setEmployers] = useState<Employer[]>([]);
   const [currentEditingEmployer, setCurrentEditingEmployer] = useState<
@@ -64,6 +73,15 @@ export default function Home() {
   const [dashboardModal, setDashboardModal] = useState<IDashboardModal>(
     defaultHomeModalState
   );
+
+  const fetchEmployers = async () => {
+    try {
+      const response = await APIClient.get("/employer");
+      setEmployers(response.data);
+    } catch (error) {
+      console.error("Failed to fetch employers:", error);
+    }
+  };
 
   useEffect(() => {
     setLoadingData(true);
@@ -84,9 +102,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <RootLayout navbarText="Dashboard App">
+      <RootLayout navbarText="Employee Dashboard">
         <HomeContext.Provider
           value={{
+            fetchEmployers: fetchEmployers,
+            setModalError: setModalError,
+            modalError: modalError,
             employers: employers,
             setEmployers: setEmployers,
             dashboardModal: dashboardModal,
@@ -110,6 +131,9 @@ export default function Home() {
           >
             <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
             <ModalContent padding="1rem">
+              <Flex justifyContent="center">
+                <FormErrorMessage size="lg" message={modalError} />
+              </Flex>
               {getDashboardModal(dashboardModal.modalType)}
             </ModalContent>
           </Modal>

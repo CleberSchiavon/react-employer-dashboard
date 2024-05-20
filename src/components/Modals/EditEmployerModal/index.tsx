@@ -4,6 +4,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Stack,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { HomeContext, defaultHomeModalState } from "@/pages";
@@ -12,13 +13,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { EditEmployerForm } from "@/components/Forms/Modals/EditEmployerForm";
 import { EditEmployer } from "@/types/Employer";
+import { APIClient } from "@/lib/axios";
+import axios from "axios";
 
 export const EditEmployerModal = () => {
-  const { currentEditingEmployer } = useContext(HomeContext);
+  const {
+    currentEditingEmployer,
+    setDashboardModal,
+    setModalError,
+    fetchEmployers,
+  } = useContext(HomeContext);
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver<EditEmployer>(EmployerFormSchema),
     defaultValues: {
@@ -28,11 +36,31 @@ export const EditEmployerModal = () => {
       position: currentEditingEmployer?.position,
     },
   });
-  const { setDashboardModal } = useContext(HomeContext);
+  const handleEditEmployer = async (values: EditEmployer) => {
+    try {
+      setModalError(undefined);
+      await APIClient.put(
+        `/employer/${currentEditingEmployer?.employerId}`,
+        values
+      );
+      fetchEmployers();
+      setModalError(undefined);
+      setDashboardModal(defaultHomeModalState);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setModalError(err.message);
+      }
+    }
+  };
   return (
     <>
-      <ModalHeader>Editar funcionário</ModalHeader>
-      <form onSubmit={handleSubmit((values) => console.log(values))}>
+      <ModalHeader>
+        <Stack spacing={2}>
+          <div>Editar funcionário</div>{" "}
+        </Stack>
+      </ModalHeader>
+
+      <form onSubmit={handleSubmit((values) => handleEditEmployer(values))}>
         <ModalBody>
           <EditEmployerForm control={control} errors={errors} />
         </ModalBody>
@@ -44,7 +72,13 @@ export const EditEmployerModal = () => {
             >
               Cancelar
             </Button>
-            <Button type="submit">Editar Funcionário</Button>
+            <Button
+              type="submit"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              Editar Funcionário
+            </Button>
           </ButtonGroup>
         </ModalFooter>
       </form>

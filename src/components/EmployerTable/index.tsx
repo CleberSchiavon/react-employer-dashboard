@@ -4,13 +4,13 @@ import {
   Button,
   ButtonGroup,
   Card,
-  CardBody,
   CardHeader,
   Flex,
   Text,
   Input,
   InputGroup,
   InputLeftElement,
+  Box,
 } from "@chakra-ui/react";
 import { FaSearch, FaPlusCircle, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { CompactTable } from "@table-library/react-table-library/compact";
@@ -27,10 +27,21 @@ export function EmployerTable() {
   const { setCurrentEditingEmployer, setDashboardModal, employers } =
     useContext(HomeContext);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const handleEditEmployee = (employee: Employer) => {
     setDashboardModal({
       employee: employee,
       modalType: ModalTypes.EDIT_EMPLOYER,
+      isOpen: true,
+    });
+    setCurrentEditingEmployer(employee);
+  };
+
+  const handleDeleteEmployee = async (employee: Employer) => {
+    setDashboardModal({
+      employee: employee,
+      modalType: ModalTypes.DELETE_EMPLOYER,
       isOpen: true,
     });
     setCurrentEditingEmployer(employee);
@@ -69,13 +80,7 @@ export function EmployerTable() {
             <Button
               leftIcon={<FaTrashAlt />}
               colorScheme="red"
-              onClick={() =>
-                setDashboardModal({
-                  employee: item,
-                  modalType: ModalTypes.DELETE_EMPLOYER,
-                  isOpen: true,
-                })
-              }
+              onClick={() => handleDeleteEmployee(item)}
             >
               Deletar Funcionário
             </Button>
@@ -86,8 +91,6 @@ export function EmployerTable() {
     },
   ];
 
-  const [searchTerm, setSearchTerm] = useState("");
-
   const chakraTheme = getTheme(DEFAULT_OPTIONS);
   const theme = useTheme([
     chakraTheme,
@@ -97,19 +100,23 @@ export function EmployerTable() {
       `,
     },
   ]);
-  let data = { nodes: employers };
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
+  let data = { nodes: employers };
   const sort = useSort(
+    // @ts-ignore
     data,
     {},
     {
       sortFns: {
-        NAME: (array) => array.sort((a, b) => a.name),
-        POSITION: (array) => array.sort((a, b) => a.position),
-        DEPARTMENT: (array) => array.sort((a, b) => a.department),
+        NAME: (array) => array.sort((a, b) => a.name.localeCompare(b.name)),
+        POSITION: (array) =>
+          array.sort((a, b) => a.position.localeCompare(b.position)),
+        DEPARTMENT: (array) =>
+          array.sort((a, b) => a.departament.localeCompare(b.departament)),
       },
     }
   );
@@ -160,13 +167,19 @@ export function EmployerTable() {
           </Button>
         </Flex>
       </CardHeader>
-      <CompactTable
-        columns={TableColumns}
-        data={data}
-        theme={theme}
-        sort={sort}
-        layout={{ custom: true, horizontalScroll: true }}
-      />
+      {employers.length > 0 ? (
+        <CompactTable
+          columns={TableColumns}
+          data={data}
+          theme={theme}
+          sort={sort}
+          layout={{ custom: true, horizontalScroll: true }}
+        />
+      ) : (
+        <Box textAlign="center" padding="1rem">
+          <Text fontSize="md">Não há funcionários cadastrados</Text>
+        </Box>
+      )}
     </Card>
   );
 }

@@ -1,11 +1,34 @@
+import { APIClient } from "@/lib/axios";
 import { HomeContext, defaultHomeModalState } from "@/pages";
 import { Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 
 export const DeleteEmployerModal = () => {
-  const { setDashboardModal, currentEditingEmployer } = useContext(HomeContext);
+  const [deletingEmployee, setDeletingEmployee] = useState(false);
+  const {
+    setModalError,
+    setDashboardModal,
+    currentEditingEmployer,
+    fetchEmployers,
+  } = useContext(HomeContext);
+  const handleDeleteEmployer = async () => {
+    try {
+      setDeletingEmployee(true);
+      setModalError(undefined);
+      await APIClient.delete(`/employer/${currentEditingEmployer?.employerId}`);
+      fetchEmployers();
+      setModalError(undefined);
+      setDashboardModal(defaultHomeModalState);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setModalError(err.message);
+      }
+    } finally {
+      setDeletingEmployee(false);
+    }
+  };
   const handleSubmit = async () => {
-    await console.log(currentEditingEmployer?.id);
     setDashboardModal(defaultHomeModalState);
   };
   return (
@@ -24,7 +47,13 @@ export const DeleteEmployerModal = () => {
         <Button onClick={() => setDashboardModal(defaultHomeModalState)}>
           Cancelar
         </Button>
-        <Button colorScheme="red" onClick={() => handleSubmit()} ml={3}>
+        <Button
+          colorScheme="red"
+          isLoading={deletingEmployee}
+          disabled={deletingEmployee}
+          onClick={() => handleDeleteEmployer()}
+          ml={3}
+        >
           Deletar
         </Button>
       </Flex>

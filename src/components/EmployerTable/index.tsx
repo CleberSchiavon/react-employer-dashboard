@@ -7,6 +7,7 @@ import {
   CardBody,
   CardHeader,
   Flex,
+  Text,
   Input,
   InputGroup,
   InputLeftElement,
@@ -22,7 +23,7 @@ import {
 import { HomeContext } from "@/pages";
 import { ModalTypes } from "@/types/Modals";
 
-const nodes = [
+export const nodes = [
   {
     id: 0,
     name: "Teste 1",
@@ -61,16 +62,19 @@ export function EmployerTable() {
       label: "Nome",
       renderCell: (item: Employer) => item.name,
       sort: { sortKey: "NAME" },
+      resize: true,
     },
     {
       label: "Cargo",
       renderCell: (item: Employer) => item.position,
       sort: { sortKey: "POSITION" },
+      resize: true,
     },
     {
       label: "Departamento",
       renderCell: (item: Employer) => item.departament,
       sort: { sortKey: "DEPARTMENT" },
+      resize: true,
     },
     {
       label: "Action",
@@ -78,12 +82,14 @@ export function EmployerTable() {
         <Flex gap="5">
           <ButtonGroup size="sm">
             <Button
-              onClick={() => handleEditEmployee(item)}
               leftIcon={<FaEdit />}
+              onClick={() => handleEditEmployee(item)}
             >
               Editar Funcionário
             </Button>
             <Button
+              leftIcon={<FaTrashAlt />}
+              colorScheme="red"
               onClick={() =>
                 setDashboardModal({
                   employee: item,
@@ -91,20 +97,27 @@ export function EmployerTable() {
                   isOpen: true,
                 })
               }
-              leftIcon={<FaTrashAlt />}
             >
               Deletar Funcionário
             </Button>
           </ButtonGroup>
         </Flex>
       ),
+      resize: true,
     },
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
 
   const chakraTheme = getTheme(DEFAULT_OPTIONS);
-  const theme = useTheme(chakraTheme);
+  const theme = useTheme([
+    chakraTheme,
+    {
+      Table: `
+      --data-table-library_grid-template-columns: 10rem 10rem 10rem auto;
+      `,
+    },
+  ]);
   let data = { nodes };
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -130,7 +143,15 @@ export function EmployerTable() {
   return (
     <Card borderRadius={5}>
       <CardHeader>
-        <Flex justifyContent="space-between">
+        <Text as="h3" fontWeight="bold" fontSize="xl">
+          Tabela de funcionários
+        </Text>
+        <Flex
+          justifyContent="space-between"
+          marginTop="1rem"
+          flexDirection={["column", "row"]}
+          gap={["1rem", "0rem"]}
+        >
           <Flex>
             <InputGroup>
               <InputLeftElement
@@ -160,14 +181,13 @@ export function EmployerTable() {
           </Button>
         </Flex>
       </CardHeader>
-      <CardBody>
-        <CompactTable
-          columns={TableColumns}
-          data={data}
-          theme={theme}
-          sort={sort}
-        />
-      </CardBody>
+      <CompactTable
+        columns={TableColumns}
+        data={data}
+        theme={theme}
+        sort={sort}
+        layout={{ custom: true, horizontalScroll: true }}
+      />
     </Card>
   );
 }

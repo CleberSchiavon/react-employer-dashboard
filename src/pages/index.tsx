@@ -2,11 +2,11 @@ import Head from "next/head";
 import { RootLayout } from "../components/Layout";
 import { EmployerTable } from "@/components/EmployerTable";
 import {
-  Heading,
   Modal,
   ModalContent,
   ModalOverlay,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import {
   Dispatch,
@@ -74,9 +74,9 @@ export default function Home() {
           }}
         >
           <Stack spacing={5}>
-            <Heading as="h2" size="lg">
+            <Text as="h2" fontSize="lg" fontWeight="500" textAlign="center">
               {defineHomeGreeting()} 👋🏼
-            </Heading>
+            </Text>
             <EmployerTable />
           </Stack>
           <Modal

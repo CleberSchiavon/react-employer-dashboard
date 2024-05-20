@@ -1,6 +1,6 @@
 {
   "name": "react-employer-dashboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "author": "Cleber Henrique",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "standard-version"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.2.0",
@@ -37,7 +38,60 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "husky": "^9.0.11",
+    "standard-version": "^9.5.0",
     "typescript": "^5.4.5"
+  },
+  "standard-version": {
+    "types": [
+      {
+        "type": "rc",
+        "section": "Release"
+      },
+      {
+        "type": "feat",
+        "section": "Features"
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "hotfix",
+        "section": "Bug Fixes"
+      },
+      {
+        "type": "ci",
+        "section": "CI"
+      },
+      {
+        "type": "chore",
+        "section": "Chores"
+      },
+      {
+        "type": "style",
+        "section": "Styles"
+      },
+      {
+        "type": "docs",
+        "section": "Documentation"
+      },
+      {
+        "type": "perf",
+        "section": "Performance Improvements"
+      },
+      {
+        "type": "refac",
+        "section": "Refactorings"
+      },
+      {
+        "type": "revert",
+        "section": "Reversal"
+      },
+      {
+        "type": "test",
+        "section": "Tests"
+      }
+    ]
   },
   "config": {
     "commitizen": {

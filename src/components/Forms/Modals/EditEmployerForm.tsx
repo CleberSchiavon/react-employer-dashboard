@@ -3,10 +3,8 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  Select,
   Stack,
 } from "@chakra-ui/react";
-import { departamentSelectOptions } from "../inputs";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { FormErrorMessage } from "@/components/Typography/FormErrorMessage";
 import { EditEmployer, Employer } from "@/types/Employer";
@@ -55,13 +53,7 @@ export const EditEmployerForm = ({ control, errors }: IEditEmployerForm) => {
                 control={control}
                 render={({ field }) => (
                   <>
-                    <Select {...field} placeholder="Selecione o departamento">
-                      {departamentSelectOptions.map((departament, index) => (
-                        <option key={index} value={departament.value}>
-                          {departament.label}
-                        </option>
-                      ))}
-                    </Select>
+                    <Input {...field} placeholder="Departamento" />
                     <FormErrorMessage message={errors.departament?.message} />
                   </>
                 )}

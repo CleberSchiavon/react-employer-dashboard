@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/CleberSchiavon/react-employer-dashboard/compare/v0.1.2...v0.1.3) (2024-05-20)
+
+
+### Documentation
+
+* **README.md:** adding backend repo link ([7d3c262](https://github.com/CleberSchiavon/react-employer-dashboard/commit/7d3c262fe7d6ca27152fff29784f49957f80f085))
+
 ### [0.1.2](https://github.com/CleberSchiavon/react-employer-dashboard/compare/v0.1.1...v0.1.2) (2024-05-20)
 
 
